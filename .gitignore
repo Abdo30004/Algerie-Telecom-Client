@@ -1,0 +1,6 @@
+node_modules
+dist
+archive
+.env
+credentials.json
+package-lock.json

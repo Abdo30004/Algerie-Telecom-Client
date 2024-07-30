@@ -1,0 +1,24 @@
+{
+  "name": "algerie-telecom-client",
+  "version": "1.0.0",
+  "description": "a client that get the data from algerie telecom api,and create reminders in google calendar",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rimraf dist",
+    "build": "npm run clean && npm run compile && npm run start"
+  },
+  "keywords": [],
+  "author": "y.abderrahmane",
+  "license": "MIT",
+  "dependencies": {
+    "@googleapis/calendar": "^9.7.6",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "rimraf": "^6.0.1"
+  }
+}
