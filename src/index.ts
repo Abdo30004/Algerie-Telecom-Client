@@ -1,6 +1,11 @@
+import path from "path";
+import { config as dotenvConfig } from "dotenv";
 import { AlgerieTelecomClient } from "./util/algerietelecom";
-import "dotenv/config";
 import { formatApiDate } from "./util/functions";
+
+dotenvConfig({
+  path: path.resolve(__dirname, "../.env"),
+});
 
 async function main() {
   const { PHONE, PASSWORD, CALENDAR_ID } = process.env;
@@ -15,13 +20,7 @@ async function main() {
 
   await client.login();
 
-  const profile = await client.getProfile();
-
-  const experyDate = formatApiDate(profile.dateexp);
-
-  const event = await client.createEvent(experyDate);
-
-  console.log(`Event created successfully ${event.htmlLink}`);
+  await client.scheduleInternetExpiry();
 }
 
 main().catch(console.error);

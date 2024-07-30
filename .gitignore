@@ -4,3 +4,4 @@ archive
 .env
 credentials.json
 package-lock.json
+bin

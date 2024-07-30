@@ -1,7 +1,8 @@
 import axios from "axios";
 import { calendar_v3 as calendar, auth } from "@googleapis/calendar";
 import credentials from "../secrets/credentials.json";
-
+import crypto from "crypto";
+import { formatApiDate } from "./functions";
 /*
 https://mobile-pre.at.dz/api/list_fact_bimestres
 https://mobile-pre.at.dz/api/list_fact_dahabia
@@ -13,6 +14,7 @@ https://mobile-pre.at.dz/api/getOffre
 */
 export class AlgerieTelecomClient {
   private token: string | null = null;
+  private static readonly eventKey = "internetends";
 
   private calendar = new calendar.Calendar({
     auth: new auth.GoogleAuth({
@@ -60,18 +62,45 @@ export class AlgerieTelecomClient {
     return response.data;
   }
 
-  async createEvent(date: Date) {
+  async existsInternetEvent(date: Date) {
+    const response = await this.calendar.events.list({
+      calendarId: this.calendarId,
+    });
     const formatedDate = date.toISOString().split("T")[0];
+    if (!response.data.items) return null;
+
+    response.data.items = response.data.items.filter(
+      (event) =>
+        event.start?.date === formatedDate &&
+        event.id?.includes(AlgerieTelecomClient.eventKey)
+    );
+
+    return response.data.items.at(0) || null;
+  }
+
+  async createInternetExpiryEvent(date: Date) {
+    const formatedDate = date.toISOString().split("T")[0];
+
+    const existsEvent = await this.existsInternetEvent(date);
+
+    if (existsEvent) {
+      console.log("Event already exists");
+      return existsEvent;
+    }
+
+    const randomId = crypto.randomBytes(64).toString("hex");
 
     const event: calendar.Schema$Event = {
       summary: "Internet Expiry Date",
       description: "Your internet subscription will expire on this date",
+      etag: formatedDate,
       start: {
         date: formatedDate,
       },
       end: {
         date: formatedDate,
       },
+      id: `${AlgerieTelecomClient.eventKey}${randomId}`,
     };
 
     const response = await this.calendar.events.insert({
@@ -80,5 +109,21 @@ export class AlgerieTelecomClient {
     });
 
     return response.data;
+  }
+
+  async scheduleInternetExpiry() {
+    const profile = await this.getProfile();
+
+    if (!profile) {
+      console.error("Failed to get profile");
+      return;
+    }
+
+    const experyDate = new Date(formatApiDate(profile.dateexp));
+
+    const event = await this.createInternetExpiryEvent(experyDate);
+
+    console.log(`The expiry date for ${profile.nd} is ${experyDate}\n`);
+    console.log(`Event created: ${event.htmlLink}`);
   }
 }

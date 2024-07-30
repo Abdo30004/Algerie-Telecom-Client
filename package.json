@@ -2,12 +2,15 @@
   "name": "algerie-telecom-client",
   "version": "1.0.0",
   "description": "a client that get the data from algerie telecom api,and create reminders in google calendar",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
   "scripts": {
     "compile": "tsc",
     "start": "node dist/index.js",
     "clean": "rimraf dist",
-    "build": "npm run clean && npm run compile && npm run start"
+    "build": "npm run clean && npm run compile",
+    "all": "npm run build && npm run start",
+    "bin": "npm run build && pkg ."
   },
   "keywords": [],
   "author": "y.abderrahmane",
@@ -16,6 +19,17 @@
     "@googleapis/calendar": "^9.7.6",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/**/*",
+      ".env"
+    ],
+    "targets": [
+      "latest-win-x64"
+    ],
+    "compress": "gzip",
+    "outputPath": "bin"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
