@@ -101,6 +101,14 @@ export class AlgerieTelecomClient {
         date: formatedDate,
       },
       id: `${AlgerieTelecomClient.eventKey}${randomId}`,
+      reminders: {
+        overrides: [
+          {
+            method: "popup",
+            minutes: 60 * 24,
+          },
+        ],
+      },
     };
 
     const response = await this.calendar.events.insert({
@@ -113,6 +121,8 @@ export class AlgerieTelecomClient {
 
   async scheduleInternetExpiry() {
     const profile = await this.getProfile();
+
+    console.log(profile);
 
     if (!profile) {
       console.error("Failed to get profile");

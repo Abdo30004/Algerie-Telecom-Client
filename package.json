@@ -10,7 +10,8 @@
     "clean": "rimraf dist",
     "build": "npm run clean && npm run compile",
     "all": "npm run build && npm run start",
-    "bin": "npm run build && pkg ."
+    "bin": "npm run build && pkg .",
+    "task": "npm run bin && node dist/scripts/task.js"
   },
   "keywords": [],
   "author": "y.abderrahmane",

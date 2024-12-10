@@ -2,10 +2,11 @@ import path from "path";
 import { config as dotenvConfig } from "dotenv";
 import { AlgerieTelecomClient } from "./util/algerietelecom";
 import { formatApiDate } from "./util/functions";
-
+import fs from "fs";
 dotenvConfig({
   path: path.resolve(__dirname, "../.env"),
 });
+
 
 async function main() {
   const { PHONE, PASSWORD, CALENDAR_ID } = process.env;
