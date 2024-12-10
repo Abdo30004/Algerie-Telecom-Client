@@ -50,7 +50,7 @@ export class AlgerieTelecomClient {
 
   async getProfile(): Promise<any> {
     const response = await this.api
-      .get("/compte_android", {
+      .get("/compte_augmentation_debit", {
         headers: {
           Authorization: `Bearer ${this.token}`,
         },
@@ -58,7 +58,6 @@ export class AlgerieTelecomClient {
       .catch(() => null);
 
     if (!response) return null;
-
     return response.data;
   }
 
@@ -108,6 +107,7 @@ export class AlgerieTelecomClient {
             minutes: 60 * 24,
           },
         ],
+        useDefault: false,
       },
     };
 
