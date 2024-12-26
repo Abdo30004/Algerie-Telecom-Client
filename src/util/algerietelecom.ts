@@ -77,6 +77,27 @@ export class AlgerieTelecomClient {
     return response.data.items.at(0) || null;
   }
 
+  async clearPreviousEvents() {
+    const response = await this.calendar.events.list({
+      calendarId: this.calendarId,
+    });
+
+    if (!response.data.items) return;
+
+    response.data.items = response.data.items.filter((event) =>
+      event.id?.includes(AlgerieTelecomClient.eventKey)
+    );
+
+    for (const event of response.data.items) {
+      if (!event.id) continue;
+
+      await this.calendar.events.delete({
+        calendarId: this.calendarId,
+        eventId: event.id,
+      });
+    }
+  }
+
   async createInternetExpiryEvent(date: Date) {
     const formatedDate = date.toISOString().split("T")[0];
 
@@ -122,14 +143,17 @@ export class AlgerieTelecomClient {
   async scheduleInternetExpiry() {
     const profile = await this.getProfile();
 
-    console.log(profile);
 
     if (!profile) {
       console.error("Failed to get profile");
       return;
     }
 
-    const experyDate = new Date(formatApiDate(profile.dateexp));
+    const formatedApiDate = formatApiDate(profile.dateexp);
+
+    const experyDate = new Date(formatedApiDate);
+
+    await this.clearPreviousEvents();
 
     const event = await this.createInternetExpiryEvent(experyDate);
 
