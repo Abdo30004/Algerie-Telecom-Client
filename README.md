@@ -23,4 +23,14 @@ You need to create a google cloud project and enable the google calendar API. Th
 ```bash
 npm install
 npm run build
+npm start
+```
+
+
+## Docker
+
+```bash
+docker build -t algerie-telecom-api-client .
+
+docker run --rm --env-file=.env --name internet-expiry-checker algerie-telecom-api-client
 ```

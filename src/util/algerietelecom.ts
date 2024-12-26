@@ -3,15 +3,8 @@ import { calendar_v3 as calendar, auth } from "@googleapis/calendar";
 import credentials from "../secrets/credentials.json";
 import crypto from "crypto";
 import { formatApiDate } from "./functions";
-/*
-https://mobile-pre.at.dz/api/list_fact_bimestres
-https://mobile-pre.at.dz/api/list_fact_dahabia
-https://mobile-pre.at.dz/api/list_adsl_dahabia
-https://mobile-pre.at.dz/api/list_fact_impaye
-https://mobile-pre.at.dz/api/list_slide
-https://mobile-pre.at.dz/api/mesBonus
-https://mobile-pre.at.dz/api/getOffre
-*/
+
+
 export class AlgerieTelecomClient {
   private token: string | null = null;
   private static readonly eventKey = "internetends";
@@ -43,7 +36,7 @@ export class AlgerieTelecomClient {
 
     if (!response) return false;
 
-    this.token = response.data.meta_data.original.token || null;
+    this.token = response.data?.meta_data?.original?.token || null;
 
     return Boolean(this.token);
   }
@@ -131,7 +124,7 @@ export class AlgerieTelecomClient {
         useDefault: false,
       },
     };
-
+    await this.clearPreviousEvents();
     const response = await this.calendar.events.insert({
       calendarId: this.calendarId,
       requestBody: event,
@@ -143,7 +136,6 @@ export class AlgerieTelecomClient {
   async scheduleInternetExpiry() {
     const profile = await this.getProfile();
 
-
     if (!profile) {
       console.error("Failed to get profile");
       return;
@@ -153,7 +145,7 @@ export class AlgerieTelecomClient {
 
     const experyDate = new Date(formatedApiDate);
 
-    await this.clearPreviousEvents();
+    
 
     const event = await this.createInternetExpiryEvent(experyDate);
 

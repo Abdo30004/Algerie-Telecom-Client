@@ -3,9 +3,11 @@ import { config as dotenvConfig } from "dotenv";
 import { AlgerieTelecomClient } from "./util/algerietelecom";
 import Schdule from "node-schedule";
 
-dotenvConfig({
-  path: path.resolve(__dirname, "../.env"),
-});
+if (process.env.NODE_ENV !== "production") {
+  dotenvConfig({
+    path: path.resolve(__dirname, "../.env"),
+  });
+}
 
 async function main() {
   const { PHONE, PASSWORD, CALENDAR_ID } = process.env; // Get the environment variables (phone number, password and google calendar id)
